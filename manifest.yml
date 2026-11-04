@@ -1,0 +1,15 @@
+applications:
+  - name: lifeline
+    memory: 1G
+    disk_quota: 1G
+    instances: 1
+    buildpacks:
+      - python_buildpack
+    path: .
+    random-route: true
+    command: cd backend && python -m uvicorn main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips='*'
+    health-check-type: http
+    health-check-http-endpoint: /api/health
+    env:
+      LIFELINE_DB: /tmp/lifeline.db
+      LIFELINE_LLM: mock

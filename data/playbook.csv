@@ -1,0 +1,51 @@
+reason                                  , action
+Damage before Delivering                , Debit note raised against courier partner for verified damage; claim and evidence requested.
+Damage before Delivering                , Demerit points applied; courier team asked to bear approved damage/repacking cost.
+Damage before Delivering                , Shipment damage investigation opened; debit note to be issued after validation.
+Damage before Delivering                , Loading/unloading and repacking costs charged to courier partner where contract permits.
+Damage before Delivering                , Partner placed on corrective-action watch; repeated damage may trigger suspension.
+Miss handling of the product            , Demerit points applied for handling failure; corrective action requested from hub manager.
+Miss handling of the product            , "Debit note proposed for documented reprocessing and delay costs, subject to contract terms."
+Miss handling of the product            , Courier team instructed to retrain handling staff and share a prevention plan.
+Miss handling of the product            , Service-level breach recorded; repeat incidents may lead to reduced allocation.
+Miss handling of the product            , Operational review held with courier partner; avoidable costs charged only after validation.
+Wrong location dispatch                 , Demerit points applied for misrouting; partner must arrange transfer to the correct hub at its cost if contractually liable.
+Wrong location dispatch                 , Debit note raised for approved rerouting charges after review of scan records.
+Wrong location dispatch                 , Written warning issued to the courier partner; route-mapping correction requested.
+Wrong location dispatch                 , Wrong-dispatch incident logged in the partner scorecard; repeat breach may affect allocation.
+Wrong location dispatch                 , Courier partner asked to cover verified return or redelivery costs under the service agreement.
+Delivery dispute and undelivered        , Joint dispute review initiated; debit note only if the partner's service failure is confirmed.
+Delivery dispute and undelivered        , Demerit points applied provisionally; delivery proof and call logs requested.
+Delivery dispute and undelivered        , Courier partner instructed to arrange re-delivery and submit a root-cause report.
+Delivery dispute and undelivered        , Return and re-delivery costs assigned according to the contract and investigation outcome.
+Delivery dispute and undelivered        , Escalated to the partner manager; repeat unresolved cases may lead to suspension of new shipments.
+Partner not answering the call          , Demerit points recorded for missed escalation calls; partner must nominate a backup contact.
+Partner not answering the call          , Formal warning issued and response-time compliance added to the partner scorecard.
+Partner not answering the call          , Service review conducted with the local courier manager; escalation matrix updated.
+Partner not answering the call          , Allocation reduced temporarily if repeated non-responsiveness breaches agreed SLAs.
+Partner not answering the call          , Debit note considered only for documented losses directly caused by the partner's non-response.
+Product left behind in courier warehouse, Demerit points applied for missed dispatch; courier partner asked to cover approved storage or redelivery costs.
+Product left behind in courier warehouse, "Debit note raised for verified extra handling and redelivery charges, subject to contract terms."
+Product left behind in courier warehouse, Warehouse supervisor issued a corrective-action request and daily pending-stock checks introduced.
+Product left behind in courier warehouse, Incident added to the courier scorecard; repeated misses may lead to reduced allocation.
+Product left behind in courier warehouse, Partner required to arrange priority dispatch at its own cost where the agreement makes it liable.
+Partner rejected the product            , Partner rejection escalated; written reason and supporting records requested before cost allocation.
+Partner rejected the product            , Demerit points applied if rejection was unjustified; approved return freight charged to the partner.
+Partner rejected the product            , Debit note proposed for documented return and rebooking costs where contractually recoverable.
+Partner rejected the product            , Partner serviceability and paperwork process reviewed; repeat unjustified rejection may lead to suspension.
+Partner rejected the product            , New consignments temporarily redirected to an alternate partner pending resolution.
+Connecting local courier team issues    , Dispute raised with the connecting local vehicle/courier team; handover scans and responsibility reviewed.
+Connecting local courier team issues    , Demerit points applied to the accountable partner after joint investigation.
+Connecting local courier team issues    , Verified extra loading/unloading or transfer costs charged to the responsible partner under the agreement.
+Connecting local courier team issues    , Joint corrective-action meeting held with both courier teams; handover SLA introduced.
+Connecting local courier team issues    , Repeated coordination failures escalated for allocation reduction or termination review.
+Vehicle breakdown                       , Courier partner asked to arrange a backup vehicle and bear verified recovery or re-delivery costs if liable.
+Vehicle breakdown                       , Demerit points applied for failure to maintain delivery continuity under the agreed SLA.
+Vehicle breakdown                       , Debit note proposed for documented delay-related costs where contract terms permit.
+Vehicle breakdown                       , Partner required to submit vehicle maintenance and contingency-plan records.
+Vehicle breakdown                       , Repeated breakdown-related SLA breaches escalated for reduced allocation or partnership review.
+Rough product handling                  , Demerit points applied; courier partner asked to bear verified repacking or damage costs if liable.
+Rough product handling                  , Debit note raised for documented product loss or handling costs after evidence review.
+Rough product handling                  , Handling audit and staff refresher training required at the responsible courier hub.
+Rough product handling                  , Loading/unloading cost charged to the partner only where responsibility is established by records and contract.
+Rough product handling                  , Repeat rough-handling incidents escalated for suspension or termination of the partnership.

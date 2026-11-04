@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Lifeline | Supply Chain Control Tower</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brandmark">L</div>
+        <div>
+          <div class="brandname">Lifeline</div>
+          <div class="tagline">From Disruption to Decision</div>
+        </div>
+      </div>
+      <div class="search">
+        <span>⌕</span
+        ><input
+          id="searchInput"
+          placeholder="Search by PO number, supplier, or product..."
+          aria-label="Search orders"
+        />
+      </div>
+      <div class="topright">
+        <button class="iconbtn" title="Open alerts">
+          ♧<i class="dot" id="bell" hidden></i>
+        </button>
+        <div class="avatar">AG</div>
+        <div class="user">
+          <strong>Anuj Gupta</strong><small>Supply Chain Manager</small>
+        </div>
+      </div>
+    </header>
+    <div class="layout">
+      <aside class="sidebar" id="nav">
+        <button class="navitem active" data-page="Dashboard">
+          <span class="ico">⌂</span>Dashboard
+        </button>
+        <button class="navitem" data-page="Orders">
+          <span class="ico">⬡</span>Orders
+        </button>
+        <button class="navitem" data-page="Suppliers">
+          <span class="ico">♟</span>Suppliers
+        </button>
+        <button class="navitem" data-page="Inventory">
+          <span class="ico">▤</span>Inventory
+        </button>
+        <button class="navitem" data-page="AI Assistant">
+          <span class="ico">✧</span>AI Assistant
+        </button>
+        <button class="navitem" data-page="Reports">
+          <span class="ico">▥</span>Reports
+        </button>
+        <div class="sidebarbottom">
+          <div class="system">
+            <b>System status</b><br /><span class="green-dot"></span
+            >Connected<br /><span id="sys" class="muted"></span><br /><button
+              class="btn"
+              style="margin-top: 8px; width: 100%"
+              onclick="resetDemo()"
+            >
+              Reset demo
+            </button>
+          </div>
+        </div>
+      </aside>
+      <main>
+        <section id="page-Dashboard">
+          <div class="pagehead">
+            <div>
+              <h1>Dashboard</h1>
+              <p>
+                One inbox for supplier messages. AI reads them, code calculates
+                the risk, you decide.
+              </p>
+            </div>
+            <div class="datepill" id="datepill"></div>
+          </div>
+          <div class="contentgrid">
+            <div class="col">
+              <div class="metrics" id="metrics"></div>
+              <section class="card">
+                <div class="panelhead">
+                  <h2>Alerts</h2>
+                  <span class="muted"
+                    >Click a row for evidence and options</span
+                  >
+                </div>
+                <div class="tablewrap" id="alerts"></div>
+              </section>
+              <section class="card">
+                <div class="panelhead"><h2>Alert detail</h2></div>
+                <div class="pad" id="detail">
+                  <span class="muted"
+                    >Select an alert above, or send a supplier message →</span
+                  >
+                </div>
+              </section>
+            </div>
+            <aside class="col">
+              <section class="card">
+                <div class="panelhead"><h2>Simulate partner message</h2></div>
+                <div class="pad sim">
+                  <div class="simgrid">
+                    <label
+                      >Channel<select class="f" id="ch">
+                        <option value="whatsapp">WhatsApp</option>
+                        <option value="sms">SMS</option>
+                        <option value="email">Email</option>
+                      </select></label
+                    >
+                    <label>From<select class="f" id="sender"></select></label>
+                  </div>
+                  <div class="simlabel">
+                    Quick examples
+                    <div class="chips">
+                      <button class="chip" onclick="ex(0)">
+                        Vehicle breakdown</button
+                      ><button class="chip" onclick="ex(1)">Mishandling</button>
+                      <button class="chip" onclick="ex(2)">
+                        Damaged carton</button
+                      ><button class="chip" onclick="ex(3)">Minor delay</button>
+                    </div>
+                  </div>
+                  <label
+                    >Message<textarea
+                      class="f"
+                      id="text"
+                      rows="3"
+                      placeholder="Type a message, or pick an example above"
+                    ></textarea>
+                  </label>
+                  <button class="btn p sendbtn" onclick="send()">
+                    Send message
+                  </button>
+                  <div class="muted" id="sendstate"></div>
+                </div>
+              </section>
+              <section class="card">
+                <div class="panelhead"><h2>Recent messages</h2></div>
+                <div class="pad" id="feed"></div>
+              </section>
+            </aside>
+          </div>
+        </section>
+        <section id="page-Orders" hidden>
+          <div class="pagehead">
+            <div>
+              <h1>Orders</h1>
+              <p>
+                Open and delivered purchase orders. Delays update automatically
+                from messages.
+              </p>
+            </div>
+          </div>
+          <section class="card">
+            <div class="tablewrap" id="orders"></div>
+          </section>
+        </section>
+        <section id="page-Suppliers" hidden>
+          <div class="pagehead">
+            <div>
+              <h1>Suppliers</h1>
+              <p>
+                Reliability score drops with delayed orders and single-source
+                parts.
+              </p>
+            </div>
+          </div>
+          <section class="card"><div class="tablewrap" id="sup"></div></section>
+        </section>
+        <section id="page-Inventory" hidden>
+          <div class="pagehead">
+            <div>
+              <h1>Inventory</h1>
+              <p>Days of cover = available stock ÷ daily use.</p>
+            </div>
+          </div>
+          <section class="card"><div class="tablewrap" id="inv"></div></section>
+        </section>
+        <section id="page-AI Assistant" hidden>
+          <div class="pagehead">
+            <div>
+              <h1>AI Assistant</h1>
+              <p>
+                Ask what-if questions. Answers come from your own orders and
+                stock, not guesses.
+              </p>
+            </div>
+          </div>
+          <section class="card">
+            <div class="pad" style="padding-top: 16px">
+              <div class="row">
+                <input
+                  class="f"
+                  id="q"
+                  value="What if All India Cargo cannot deliver for 7 days?"
+                  style="flex: 1"
+                /><button class="btn p" onclick="ask()">Ask</button>
+              </div>
+              <div class="chips" style="margin: 2px 0 10px">
+                <button
+                  class="chip"
+                  onclick="ask('Which order is most at risk right now?')"
+                >
+                  Most at-risk order</button
+                ><button
+                  class="chip"
+                  onclick="ask('Which carrier should we worry about most?')"
+                >
+                  Riskiest carrier</button
+                ><button
+                  class="chip"
+                  onclick="ask('What if DHL cannot deliver for 2 weeks?')"
+                >
+                  What if DHL slips 2 weeks</button
+                ><button
+                  class="chip"
+                  onclick="ask('What should we do about AIC-HYP-20261051?')"
+                >
+                  Advice on one order
+                </button>
+              </div>
+              <div class="explain" id="ans">
+                Try: What if DHL cannot deliver for 2 weeks?
+              </div>
+            </div>
+          </section>
+          <section class="card" style="margin-top: 16px">
+            <div class="panelhead">
+              <h2>AI response plans</h2>
+              <span class="muted"
+                >For every alert waiting on a decision. You approve; nothing is
+                sent automatically.</span
+              >
+            </div>
+            <div class="pad" id="plans"></div>
+          </section>
+        </section>
+        <section id="page-Reports" hidden>
+          <div class="pagehead">
+            <div>
+              <h1>Reports</h1>
+              <p>
+                Status overview and the full audit trail of who decided what.
+              </p>
+            </div>
+          </div>
+          <div class="contentgrid">
+            <section class="card">
+              <div class="panelhead"><h2>Audit log</h2></div>
+              <div class="tablewrap" id="audit"></div>
+            </section>
+            <section class="card">
+              <div class="panelhead"><h2>Order status</h2></div>
+              <div class="pad" id="bars"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

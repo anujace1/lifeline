@@ -1,0 +1,55 @@
+po,supplier_id,sku,qty,order_date,promised_date,status,revised_date,note
+AIC-HYP-20261001,S01,CMP-001,620,2026-10-21,2026-10-27,Delayed,2026-10-29,Damage before Delivering | Re-delivery scheduled | Customer follow-up required
+AIC-HYP-20261002,S01,CMP-002,20000,2026-10-24,2026-10-28,Delayed,2026-11-01,Damage before Delivering | Awaiting partner update | Service complaint raised
+AIC-HYP-20261003,S01,CMP-003,7700,2026-10-21,2026-10-29,Delayed,2026-10-30,Damage before Delivering | Pending investigation | Delivery rescheduled
+AIC-HYP-20261004,S01,CMP-004,1500,2026-10-26,2026-10-31,Delayed,2026-11-03,Damage before Delivering | Escalated to hub | Missed expected delivery date
+AIC-HYP-20261005,S01,CMP-005,900,2026-10-09,2026-10-14,Delivered,2026-10-19,Damage before Delivering | Resolved after delay | Potential inconvenience
+DHL-HYP-20261006,S02,CMP-006,25000,2026-10-20,2026-10-27,Delayed,2026-10-29,Miss handling of the product | Re-delivery scheduled | Customer follow-up required
+DHL-HYP-20261007,S02,CMP-007,4800,2026-10-22,2026-10-28,Delayed,2026-11-01,Miss handling of the product | Awaiting partner update | Service complaint raised
+DHL-HYP-20261008,S02,CMP-008,2750,2026-10-20,2026-10-29,Delayed,2026-10-30,Miss handling of the product | Pending investigation | Delivery rescheduled
+DHL-HYP-20261009,S02,CMP-009,600,2026-10-26,2026-10-31,Delayed,2026-11-03,Miss handling of the product | Escalated to hub | Missed expected delivery date
+DHL-HYP-20261010,S02,CMP-010,27000,2026-10-08,2026-10-14,Delivered,2026-10-19,Miss handling of the product | Resolved after delay | Potential inconvenience
+AIC-HYP-20261011,S01,CMP-001,1500,2026-10-22,2026-10-28,Delayed,2026-10-30,Wrong location dispatch | Re-delivery scheduled | Customer follow-up required
+AIC-HYP-20261012,S01,CMP-002,17500,2026-10-23,2026-10-27,Delayed,2026-10-31,Wrong location dispatch | Awaiting partner update | Service complaint raised
+AIC-HYP-20261013,S01,CMP-003,7000,2026-10-22,2026-10-30,Delayed,2026-10-31,Wrong location dispatch | Pending investigation | Delivery rescheduled
+AIC-HYP-20261014,S01,CMP-004,1250,2026-10-25,2026-10-30,Delayed,2026-11-02,Wrong location dispatch | Escalated to hub | Missed expected delivery date
+AIC-HYP-20261015,S01,CMP-005,800,2026-10-05,2026-10-10,Delivered,2026-10-15,Wrong location dispatch | Resolved after delay | Potential inconvenience
+DHL-HYP-20261016,S02,CMP-006,60000,2026-10-21,2026-10-28,Delayed,2026-10-30,Delivery dispute and undelivered | Re-delivery scheduled | Customer follow-up required
+DHL-HYP-20261017,S02,CMP-007,4200,2026-10-21,2026-10-27,Delayed,2026-10-31,Delivery dispute and undelivered | Awaiting partner update | Service complaint raised
+DHL-HYP-20261018,S02,CMP-008,2500,2026-10-21,2026-10-30,Delayed,2026-10-31,Delivery dispute and undelivered | Pending investigation | Delivery rescheduled
+DHL-HYP-20261019,S02,CMP-009,500,2026-10-25,2026-10-30,Delayed,2026-11-02,Delivery dispute and undelivered | Escalated to hub | Missed expected delivery date
+DHL-HYP-20261020,S02,CMP-010,24000,2026-10-04,2026-10-10,Delivered,2026-10-15,Delivery dispute and undelivered | Resolved after delay | Potential inconvenience
+AIC-HYP-20261021,S01,CMP-001,1380,2026-10-21,2026-10-27,Delayed,2026-10-29,Partner not answering the call | Re-delivery scheduled | Customer follow-up required
+AIC-HYP-20261022,S01,CMP-002,15000,2026-10-24,2026-10-28,Delayed,2026-11-01,Partner not answering the call | Awaiting partner update | Service complaint raised
+AIC-HYP-20261023,S01,CMP-003,6300,2026-10-21,2026-10-29,Delayed,2026-10-30,Partner not answering the call | Pending investigation | Delivery rescheduled
+AIC-HYP-20261024,S01,CMP-004,3000,2026-10-26,2026-10-31,Delayed,2026-11-03,Partner not answering the call | Escalated to hub | Missed expected delivery date
+AIC-HYP-20261025,S01,CMP-005,700,2026-10-10,2026-10-15,Delivered,2026-10-20,Partner not answering the call | Resolved after delay | Potential inconvenience
+DHL-HYP-20261026,S02,CMP-006,55000,2026-10-20,2026-10-27,Delayed,2026-10-29,Product left behind in courier warehouse | Re-delivery scheduled | Customer follow-up required
+DHL-HYP-20261027,S02,CMP-007,3600,2026-10-22,2026-10-28,Delayed,2026-11-01,Product left behind in courier warehouse | Awaiting partner update | Service complaint raised
+DHL-HYP-20261028,S02,CMP-008,2250,2026-10-20,2026-10-29,Delayed,2026-10-30,Product left behind in courier warehouse | Pending investigation | Delivery rescheduled
+DHL-HYP-20261029,S02,CMP-009,1200,2026-10-26,2026-10-31,Delayed,2026-11-03,Product left behind in courier warehouse | Escalated to hub | Missed expected delivery date
+DHL-HYP-20261030,S02,CMP-010,21000,2026-10-09,2026-10-15,Delivered,2026-10-20,Product left behind in courier warehouse | Resolved after delay | Potential inconvenience
+AIC-HYP-20261031,S01,CMP-001,1250,2026-10-22,2026-10-28,Delayed,2026-10-30,Partner rejected the product | Re-delivery scheduled | Customer follow-up required
+AIC-HYP-20261032,S01,CMP-002,12500,2026-10-23,2026-10-27,Delayed,2026-10-31,Partner rejected the product | Awaiting partner update | Service complaint raised
+AIC-HYP-20261033,S01,CMP-003,5600,2026-10-22,2026-10-30,Delayed,2026-10-31,Partner rejected the product | Pending investigation | Delivery rescheduled
+AIC-HYP-20261034,S01,CMP-004,2750,2026-10-25,2026-10-30,Delayed,2026-11-02,Partner rejected the product | Escalated to hub | Missed expected delivery date
+AIC-HYP-20261035,S01,CMP-005,600,2026-10-06,2026-10-11,Delivered,2026-10-16,Partner rejected the product | Resolved after delay | Potential inconvenience
+DHL-HYP-20261036,S02,CMP-006,50000,2026-10-21,2026-10-28,Delayed,2026-10-30,Connecting local courier team issues | Re-delivery scheduled | Customer follow-up required
+DHL-HYP-20261037,S02,CMP-007,3000,2026-10-21,2026-10-27,Delayed,2026-10-31,Connecting local courier team issues | Awaiting partner update | Service complaint raised
+DHL-HYP-20261038,S02,CMP-008,2000,2026-10-21,2026-10-30,Delayed,2026-10-31,Connecting local courier team issues | Pending investigation | Delivery rescheduled
+DHL-HYP-20261039,S02,CMP-009,1100,2026-10-25,2026-10-30,Delayed,2026-11-02,Connecting local courier team issues | Escalated to hub | Missed expected delivery date
+DHL-HYP-20261040,S02,CMP-010,18000,2026-10-05,2026-10-11,Delivered,2026-10-16,Connecting local courier team issues | Resolved after delay | Potential inconvenience
+AIC-HYP-20261041,S01,CMP-001,1120,2026-10-21,2026-10-27,Delayed,2026-10-29,Vehicle breakdown | Re-delivery scheduled | Customer follow-up required
+AIC-HYP-20261042,S01,CMP-002,30000,2026-10-24,2026-10-28,Delayed,2026-11-01,Vehicle breakdown | Awaiting partner update | Service complaint raised
+AIC-HYP-20261043,S01,CMP-003,4900,2026-10-21,2026-10-29,Delayed,2026-10-30,Vehicle breakdown | Pending investigation | Delivery rescheduled
+AIC-HYP-20261044,S01,CMP-004,2500,2026-10-26,2026-10-31,Delayed,2026-11-03,Vehicle breakdown | Escalated to hub | Missed expected delivery date
+AIC-HYP-20261045,S01,CMP-005,500,2026-10-11,2026-10-16,Delivered,2026-10-21,Vehicle breakdown | Resolved after delay | Potential inconvenience
+DHL-HYP-20261046,S02,CMP-006,45000,2026-10-20,2026-10-27,Delayed,2026-10-29,Rough product handling | Re-delivery scheduled | Customer follow-up required
+DHL-HYP-20261047,S02,CMP-007,7200,2026-10-22,2026-10-28,Delayed,2026-11-01,Rough product handling | Awaiting partner update | Service complaint raised
+DHL-HYP-20261048,S02,CMP-008,1750,2026-10-20,2026-10-29,Delayed,2026-10-30,Rough product handling | Pending investigation | Delivery rescheduled
+DHL-HYP-20261049,S02,CMP-009,1000,2026-10-26,2026-10-31,Delayed,2026-11-03,Rough product handling | Escalated to hub | Missed expected delivery date
+DHL-HYP-20261050,S02,CMP-010,15000,2026-10-10,2026-10-16,Delivered,2026-10-21,Rough product handling | Resolved after delay | Potential inconvenience
+AIC-HYP-20261051,S01,CMP-001,1000,2026-10-25,2026-10-31,Open,,Sample on-time order (added for demo)
+AIC-HYP-20261052,S01,CMP-004,2000,2026-10-27,2026-11-01,Open,,Sample on-time order (added for demo)
+DHL-HYP-20261053,S02,CMP-007,4800,2026-10-27,2026-11-02,Open,,Sample on-time order (added for demo)
+DHL-HYP-20261054,S02,CMP-010,24000,2026-10-25,2026-10-31,Open,,Sample on-time order (added for demo)

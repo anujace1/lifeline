@@ -1,0 +1,11 @@
+sku    , name               , category  , lead_time_days, unit_cost, primary_supplier_id, backup_supplier_id, backup_premium_pct, backup_lead_time_days, backup_qualification_days
+CMP-001, Silicon Wafer      , Wafer     ,              6,     40   , S01                , S03               ,                  5,                     3,                         0
+CMP-002, Resistor Reel      , Passive   ,              4,      0.02, S01                , S03               ,                  4,                     2,                         0
+CMP-003, Microcontroller    , Logic IC  ,              8,      2.5 , S01                ,                   ,                  0,                     0,                         0
+CMP-004, Power Management IC, Analog IC ,              5,      1.1 , S01                , S03               ,                  6,                     3,                         2
+CMP-005, Packaged Die       , Packaging ,              5,      5.5 , S01                , S04               ,                  5,                     3,                         0
+CMP-006, Capacitor Reel     , Passive   ,              7,      0.03, S02                , S04               ,                  4,                     3,                         0
+CMP-007, Memory Module      , Memory    ,              6,      9.0 , S02                , S04               ,                  6,                     3,                         1
+CMP-008, Sensor Module      , Sensors   ,              9,      3.2 , S02                ,                   ,                  0,                     0,                         0
+CMP-009, PCB Panel          , PCB       ,              5,     12   , S02                , S03               ,                  5,                     2,                         0
+CMP-010, Connector Kit      , Connectors,              6,      0.8 , S02                , S04               ,                  4,                     3,                         0

@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+python-multipart
+# Add this only when switching to SAP Generative AI Hub (LIFELINE_LLM=sap):
+# litellm

@@ -1,0 +1,8 @@
+lifeline.db
+__pycache__/
+.env
+*.key
+*service-key*.json
+.aicore/
+sap_env.sh
+*servicekey*.json
