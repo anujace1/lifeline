@@ -37,7 +37,9 @@ def init(conn, reseed=False):
         for t in TABLES + ("messages", "alerts", "audit"):
             conn.execute(f"DROP TABLE IF EXISTS {t}")
     conn.executescript(SCHEMA)
-    if "plan" not in [r[1] for r in conn.execute("PRAGMA table_info(alerts)")]:  # upgrade an older database file
+    if "plan" not in [
+        r[1] for r in conn.execute("PRAGMA table_info(alerts)")
+    ]:  # upgrade an older database file
         conn.execute("ALTER TABLE alerts ADD COLUMN plan TEXT")
     if not conn.execute("SELECT COUNT(*) FROM suppliers").fetchone()[0]:
         seed(conn)
@@ -50,12 +52,11 @@ def seed(conn, tables=TABLES):
     for t in tables:
         if not (DATA / f"{t}.csv").exists():
             continue
-        with open(DATA / f"{t}.csv", newline="", encoding="utf-8-sig") as f:  # utf-8-sig tolerates the invisible mark Excel/Notepad can add
+        with open(DATA / f"{t}.csv", newline="", encoding="utf-8") as f:
             rows = list(csv.DictReader(f))
         if not rows:
             continue
-        cols = [c.strip() for c in rows[0].keys()]
-        rows = [{k.strip(): (v.strip() if isinstance(v, str) else v) for k, v in r.items()} for r in rows]
+        cols = list(rows[0].keys())
         conn.executemany(
             f"INSERT INTO {t} ({','.join(cols)}) VALUES ({','.join('?' * len(cols))})",
             [tuple(r[c] if r[c] != "" else None for c in cols) for r in rows],

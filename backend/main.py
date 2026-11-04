@@ -1,4 +1,5 @@
 """Lifeline API.  Run:  cd backend && uvicorn main:app --reload   then open http://localhost:8000"""
+
 import base64
 import hmac
 import os
@@ -14,7 +15,9 @@ from channels import twilio_sig
 app = FastAPI(title="Lifeline")
 conn = db.connect()
 db.init(conn)
-LOCK = threading.Lock()  # SQLite + one shared connection: serialise writes (fine for a prototype)
+LOCK = (
+    threading.Lock()
+)  # SQLite + one shared connection: serialise writes (fine for a prototype)
 
 
 @app.middleware("http")
@@ -26,11 +29,17 @@ async def basic_auth(request: Request, call_next):
     header = request.headers.get("Authorization", "")
     if header.startswith("Basic "):
         try:
-            if hmac.compare_digest(base64.b64decode(header[6:]).decode().partition(":")[2], pw):
+            if hmac.compare_digest(
+                base64.b64decode(header[6:]).decode().partition(":")[2], pw
+            ):
                 return await call_next(request)
         except Exception:
             pass
-    return Response("Login required", status_code=401, headers={"WWW-Authenticate": 'Basic realm="Lifeline"'})
+    return Response(
+        "Login required",
+        status_code=401,
+        headers={"WWW-Authenticate": 'Basic realm="Lifeline"'},
+    )
 
 
 def rows(sql, *args):
@@ -55,53 +64,77 @@ class Ask(BaseModel):
 
 @app.get("/api/health")
 def health():
-    """Also shows which folder and database this server is really using, and how many rows each table holds (handy for mixed-up folders)."""
-    try:
-        rows_in = {t: conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in db.TABLES}
-    except Exception as e:
-        rows_in = {"error": str(e)}
-    return {"ok": True, "llm": config.LLM_PROVIDER, "today": config.TODAY.isoformat(),
-            "data_dir": str(db.DATA), "db_file": str(Path(config.DB_PATH).resolve()), "rows": rows_in}
+    return {"ok": True, "llm": config.LLM_PROVIDER, "today": config.TODAY.isoformat()}
 
 
 @app.get("/api/summary")
 def summary():
-    open_alerts = rows("SELECT * FROM alerts WHERE status IN ('pending_approval','needs_review')")
+    open_alerts = rows(
+        "SELECT * FROM alerts WHERE status IN ('pending_approval','needs_review')"
+    )
     inv = [risk.inventory_risk(i) for i in conn.execute("SELECT * FROM inventory")]
-    return {"open_alerts": len(open_alerts), "critical": sum(a["severity"] == "critical" for a in open_alerts),
-            "delayed_orders": conn.execute("SELECT COUNT(*) FROM orders WHERE status='Delayed'").fetchone()[0],
-            "at_risk_items": sum(r != "Healthy" for r in inv),
-            "messages": conn.execute("SELECT COUNT(*) FROM messages").fetchone()[0]}
+    return {
+        "open_alerts": len(open_alerts),
+        "critical": sum(a["severity"] == "critical" for a in open_alerts),
+        "delayed_orders": conn.execute(
+            "SELECT COUNT(*) FROM orders WHERE status='Delayed'"
+        ).fetchone()[0],
+        "at_risk_items": sum(r != "Healthy" for r in inv),
+        "messages": conn.execute("SELECT COUNT(*) FROM messages").fetchone()[0],
+    }
 
 
 @app.get("/api/orders")
 def orders():
-    return rows("SELECT o.*, COALESCE(s.name, o.supplier_id) AS supplier, COALESCE(p.name, o.sku) AS part FROM orders o LEFT JOIN suppliers s ON s.supplier_id = o.supplier_id LEFT JOIN parts p ON p.sku = o.sku ORDER BY o.promised_date")
+    return rows(
+        "SELECT o.*, s.name AS supplier, p.name AS part FROM orders o JOIN suppliers s USING(supplier_id) JOIN parts p USING(sku) ORDER BY o.promised_date"
+    )
 
 
 @app.get("/api/suppliers")
 def suppliers():
-    return [{**r, **risk.supplier_score(conn, r["supplier_id"])} for r in rows("SELECT * FROM suppliers")]
+    return [
+        {**r, **risk.supplier_score(conn, r["supplier_id"])}
+        for r in rows("SELECT * FROM suppliers")
+    ]
 
 
 @app.get("/api/inventory")
 def inventory():
     out = []
-    for i in conn.execute("SELECT i.*, p.name FROM inventory i JOIN parts p USING(sku)"):
-        o = conn.execute("SELECT * FROM orders WHERE sku=? AND status!='Delivered' ORDER BY promised_date", (i["sku"],)).fetchone()
+    for i in conn.execute(
+        "SELECT i.*, p.name FROM inventory i JOIN parts p USING(sku)"
+    ):
+        o = conn.execute(
+            "SELECT * FROM orders WHERE sku=? AND status!='Delivered' ORDER BY promised_date",
+            (i["sku"],),
+        ).fetchone()
         avail, cov = risk.stock_position(i)
-        out.append({**dict(i), "available": avail, "cover_days": risk.cover_days(i), "po": o["po"] if o else None, "risk": risk.inventory_risk(i, o)})
+        out.append(
+            {
+                **dict(i),
+                "available": avail,
+                "cover_days": risk.cover_days(i),
+                "po": o["po"] if o else None,
+                "risk": risk.inventory_risk(i, o),
+            }
+        )
     return out
 
 
 @app.get("/api/messages")
 def messages():
-    return rows("SELECT m.*, s.name AS supplier FROM messages m LEFT JOIN suppliers s USING(supplier_id) ORDER BY m.id DESC LIMIT 50")
+    return rows(
+        "SELECT m.*, s.name AS supplier FROM messages m LEFT JOIN suppliers s USING(supplier_id) ORDER BY m.id DESC LIMIT 50"
+    )
 
 
 @app.get("/api/alerts")
 def alerts():
-    return [agent.alert_dict(r) for r in conn.execute("SELECT * FROM alerts ORDER BY id DESC")]
+    return [
+        agent.alert_dict(r)
+        for r in conn.execute("SELECT * FROM alerts ORDER BY id DESC")
+    ]
 
 
 @app.get("/api/alerts/{aid}")
@@ -142,9 +175,12 @@ def plan(aid: int, r: PlanReq):
         return {"state": "done", "result": prep["cached"]}
 
     def work():
-        result = llm.advise(prep["facts"], prep["fallback"])  # slow part runs outside the lock
+        result = llm.advise(
+            prep["facts"], prep["fallback"]
+        )  # slow part runs outside the lock
         with LOCK:
             return agent.plan_save(conn, aid, result)
+
     return {"state": "working", "job": jobs.start(work, key=f"plan-{aid}")}
 
 
@@ -153,7 +189,12 @@ def ask(q: Ask):
     """Facts are collected under the lock; the (slow) AI answer runs as a background job."""
     with LOCK:
         prep = agent.ask_prepare(conn, q.question)
-    return {"state": "working", "job": jobs.start(lambda: llm.answer(q.question, prep["facts"], prep["fallback"]))}
+    return {
+        "state": "working",
+        "job": jobs.start(
+            lambda: llm.answer(q.question, prep["facts"], prep["fallback"])
+        ),
+    }
 
 
 @app.get("/api/jobs/{jid}")
@@ -164,10 +205,7 @@ def job(jid: str):
 @app.post("/api/reset")
 def reset():
     with LOCK:
-        try:
-            db.init(conn, reseed=True)
-        except Exception as e:  # tell the dashboard exactly which file failed
-            raise HTTPException(500, str(e))
+        db.init(conn, reseed=True)
     return {"ok": True}
 
 
@@ -183,18 +221,41 @@ async def twilio(request: Request):
     token, base = os.getenv("TWILIO_AUTH_TOKEN"), os.getenv("LIFELINE_PUBLIC_URL")
     if token and base:  # signature check is on only when both are set
         url = base.rstrip("/") + "/webhooks/twilio"
-        if not twilio_sig.valid(token, url, form, request.headers.get("X-Twilio-Signature", "")):
+        if not twilio_sig.valid(
+            token, url, form, request.headers.get("X-Twilio-Signature", "")
+        ):
             raise HTTPException(403, "invalid Twilio signature")
     sender = form.get("From", "")
     if not sender:
         raise HTTPException(400, "missing From")
-    await run_in_threadpool(ingest, Inbound(channel="whatsapp" if sender.startswith("whatsapp:") else "sms", sender=sender, text=form.get("Body", "")))
-    return Response(content="<Response></Response>", media_type="application/xml")  # empty TwiML = received, no auto-reply
+    await run_in_threadpool(
+        ingest,
+        Inbound(
+            channel="whatsapp" if sender.startswith("whatsapp:") else "sms",
+            sender=sender,
+            text=form.get("Body", ""),
+        ),
+    )
+    return Response(
+        content="<Response></Response>", media_type="application/xml"
+    )  # empty TwiML = received, no auto-reply
 
 
 @app.post("/webhooks/email")
 def email_in(payload: dict):
-    return ingest(Inbound(channel="email", sender=payload["from"], text=f"{payload.get('subject', '')}\n{payload.get('text', '')}"))
+    return ingest(
+        Inbound(
+            channel="email",
+            sender=payload["from"],
+            text=f"{payload.get('subject', '')}\n{payload.get('text', '')}",
+        )
+    )
 
 
-app.mount("/", StaticFiles(directory=Path(__file__).resolve().parent.parent / "frontend", html=True), name="ui")
+app.mount(
+    "/",
+    StaticFiles(
+        directory=Path(__file__).resolve().parent.parent / "frontend", html=True
+    ),
+    name="ui",
+)
