@@ -1,81 +1,118 @@
-# Lifeline starter (chip supply resilience)
+# Lifeline: agentic AI for resilient supply chains
 
-One AI agent reads supplier messages from any channel, matches them to your orders and inventory,
-calculates the exposure with plain code, and proposes options that a person approves.
+> From disruption to decision. One AI agent reads supplier and delivery-partner messages from WhatsApp, SMS and email, works out what the delay will cost, compares recovery options, drafts the response, and leaves the final call to a human.
 
-## Run
-    pip install -r requirements.txt
-    cd backend
-    python demo_cli.py            # full pipeline in the terminal, no server
-    uvicorn main:app --reload     # dashboard at http://localhost:8000 (API docs at /docs)
+Built for the **SAP Hackathon 2026** (theme: *agentic AI that senses, adapts and recovers in real time*). Status: **working prototype running on sample data**.
 
-## How it flows
-channel (simulator / Twilio / email) -> `agent.ingest` -> `llm.extract` (AI understands)
--> match supplier + order -> `risk.exposure` + `scenarios.run_scenarios` (code calculates)
--> alert (`pending_approval` or `needs_review` if confidence < 0.6) -> human approves -> audit log.
+<img width="947" height="498" alt="Screenshot 2026-11-09 171507" src="https://github.com/user-attachments/assets/ffc99c89-09d7-4bce-8e63-f61527a50819" />
 
-## Files to know
-- `data/*.csv`        your real data goes here (keep the column names), then delete lifeline.db or click Reset
-- `backend/risk.py`   cover days, stock-out date, gap, severity, supplier score
-- `backend/scenarios.py` do nothing / run slower / backup supplier / pay early; assumptions in `config.py`
-- `backend/llm.py`    all AI calls; `LIFELINE_LLM=mock|anthropic|sap`
-- `backend/agent.py`  the agent pipeline, approvals, grounded what-if (`ask`)
 
-## Switch on a real model
-    LIFELINE_LLM=anthropic ANTHROPIC_API_KEY=... uvicorn main:app --reload
-    LIFELINE_LLM=sap       (after pip install generative-ai-hub-sdk and setting AICORE_* variables)
-If a model call fails the app falls back to the rule-based mock, so the demo never breaks.
+## The problem
 
-## Real channels (later)
-Point a Twilio WhatsApp/SMS webhook at POST /webhooks/twilio, and forward email to POST /webhooks/email.
-Add Twilio signature validation and authentication before exposing it publicly.
+A delay usually arrives as an unstructured message ("shipment will be 8 days late, vehicle breakdown"). Someone has to read it, find the order, check stock, estimate the damage and decide, by hand, while the stock runs down. Lifeline turns that chain into seconds of work and keeps a person in control.
 
-## Twilio (WhatsApp / SMS)
-1. Put your own phone number (with country code, e.g. +91...) on one supplier in `data/suppliers.csv`, then click "Reset demo".
-2. Make the server reachable (ngrok/Cloudflare Tunnel locally, or the BTP app URL once deployed).
-3. In Twilio's sandbox settings set "When a message comes in" to `https://YOUR-URL/webhooks/twilio` (POST).
-4. Optional hardening: set `TWILIO_AUTH_TOKEN` and `LIFELINE_PUBLIC_URL` (your https base URL, no trailing slash) to reject requests not signed by Twilio.
+## What it does
 
-## Deploy on SAP BTP Cloud Foundry
-    cf login -a <API endpoint> --sso
-    cf push            # reads manifest.yml
-    cf set-env lifeline LIFELINE_PUBLIC_URL https://<your-app-url>
-    cf restage lifeline
-SQLite lives on temporary disk there: data resets on restart and is re-seeded from data/*.csv. Move to HANA Cloud for persistence.
+- **Senses:** one inbox for WhatsApp and SMS (Twilio webhook), email (IMAP poller) and a built-in simulator.
+- **Understands:** an AI model extracts intent, delay, reason and order number from messy, multilingual text, with a confidence score. Doubtful messages go to *needs review* instead of triggering action.
+- **Calculates:** plain code (not the AI) computes days of stock cover, stock-out date, gap, revenue at risk and a supplier risk score.
+- **Adapts:** ranks recovery options that differ per situation (backup partner, express transport, split shipment, replacement vehicle, re-sequencing production, and more).
+- **Recovers:** drafts an action plan, a message to the partner and questions to ask, grounded in verified numbers and the company's own past actions (`data/playbook.csv`). A human approves; everything is audit-logged.
+- **Answers questions:** a free-form Ask box answers from live orders, stock and alerts, and flags any figure that is not in the data.
 
-## Hosting without Cloud Foundry
-- Render (free web service): Build `pip install -r requirements.txt`, Start `cd backend && python -m uvicorn main:app --host 0.0.0.0 --port $PORT`.
-- Env vars: LIFELINE_DB=/tmp/lifeline.db, LIFELINE_LLM=mock (or sap + AICORE_*), LIFELINE_PASSWORD=<dashboard password>.
-- LIFELINE_PASSWORD protects the dashboard/API with a browser login (any username); webhooks and /api/health stay open.
+## How it works
 
-## Other AI providers (no SAP needed)
-`LIFELINE_LLM=openai` talks to any OpenAI-compatible endpoint with no extra packages:
-- LLM_BASE_URL (default http://localhost:11434/v1 = local Ollama), LLM_MODEL (default qwen2.5:3b), LLM_API_KEY (default none), LLM_TIMEOUT (seconds)
-- Local small model: install Ollama, `ollama pull qwen2.5:3b`, then run the app on the same machine.
-- Hosted providers: set the three LLM_* variables from the provider's docs.
-- `LIFELINE_LLM=anthropic` (needs `pip install anthropic` and ANTHROPIC_API_KEY) and `LIFELINE_LLM=sap` also exist.
-Model output is validated and cross-checked against the rule-based reader; disagreements go to "needs review".
+```mermaid
+flowchart LR
+  A[WhatsApp / SMS via Twilio] --> D[Unified inbox]
+  B[Email via IMAP poller] --> D
+  C[Dashboard simulator] --> D
+  D --> E[AI reads the message]
+  E --> F[Match supplier and order]
+  F --> G[Risk and scenario engines - plain code]
+  G --> H[Alert with evidence and ranked options]
+  H --> I[Human approves or rejects]
+  I --> J[Audit log]
+  H --> K[AI response plan and Ask box]
+```
 
-## Delivery-complaints dataset
-`python tools/convert_complaints.py <workbook.xlsx>` rebuilds data/*.csv from the complaints workbook (needs `pip install openpyxl`).
-Real: carriers, consignment numbers, delay reasons/days, statuses, impacts, the company's actions per reason (data/playbook.csv).
-Sample (generated, consistent): items, quantities, dates, stock, costs, contacts, alternate carriers.
-Order references can be PO-1234 or consignment numbers like AIC-HYP-20261001.
+**Design principles**
 
-## AI response plans
-Dashboard > AI Assistant > "AI response plans": for each alert waiting on a decision the AI drafts actions, a message to the partner and
-questions to ask, grounded in the verified numbers and data/playbook.csv. Without a model it falls back to rule-based plans.
-Prompt: PLAN_SYSTEM in backend/llm.py. Plans are cached per alert (Regenerate to refresh). Nothing is sent automatically.
+1. *AI reads, code calculates, humans decide.* The model never does arithmetic on money or dates and cannot approve anything.
+2. *Every AI output is validated.* Model replies are parsed defensively, cross-checked against a rule-based reader, and disagreements are sent to a human.
+3. *It works without AI.* If no model is available, a rule-based reader and rule-based plans take over.
+4. *Slow models are safe.* Plans and answers run as background jobs that the dashboard polls, so a slow local model cannot hit a timeout.
 
-## Tunnel (Windows)
-Run the server first, then:  powershell -ExecutionPolicy Bypass -File tools\start_tunnel.ps1
-Prints the public link only after the tunnel is connected. Cloudflare error 1033 means the tunnel is not running/connected.
+## Tech stack
 
-## Options vary per alert
-backend/scenarios.py builds a different option set per alert: reason-specific carrier fixes (REASON_ACTIONS), express transport,
-split shipment, re-sequencing, backup partner. "Run line slower" is hidden when it gives no benefit.
-Free-form Ask: facts are collected in agent.ask_prepare and worded by the model (llm.answer); figures not in the data are flagged.
+Python, FastAPI, Uvicorn, SQLite, vanilla HTML/CSS/JavaScript. AI through any OpenAI-compatible endpoint (default: a local **Ollama** model, `qwen2.5:3b`), with optional Anthropic and SAP Generative AI Hub providers. Twilio (WhatsApp/SMS webhooks), IMAP (email), Cloudflare quick tunnels for live webhooks.
 
-## One-command local start (Windows)
-powershell -ExecutionPolicy Bypass -File .\run_local_ai.ps1   (checks Python, packages, Ollama, the model and the port, then starts Lifeline)
-- Prompts: backend/prompts/plan_system.md is the AI response-plan prompt (restart the server after editing).
+## Quick start (Windows PowerShell)
+
+```powershell
+# one-time: install Python 3.12 and Ollama, then
+ollama pull qwen2.5:3b
+cd lifeline
+powershell -ExecutionPolicy Bypass -File .\run_local_ai.ps1
+```
+
+Open http://localhost:8000. No model? Run without AI:
+
+```powershell
+python -m pip install -r requirements.txt
+cd backend
+python -m uvicorn main:app --reload
+```
+
+Smoke test without the web server: `python backend/demo_cli.py`.
+
+## Configuration
+
+| Variable | Purpose |
+|---|---|
+| `LIFELINE_LLM` | `mock` (rules only, default), `openai` (any OpenAI-compatible server), `anthropic`, `sap` |
+| `LLM_BASE_URL`, `LLM_MODEL`, `LLM_API_KEY`, `LLM_TIMEOUT` | For `openai` (defaults target local Ollama) |
+| `LIFELINE_PASSWORD` | Optional login for the dashboard and API (webhooks and `/api/health` stay open) |
+| `TWILIO_AUTH_TOKEN`, `LIFELINE_PUBLIC_URL` | Optional Twilio signature check |
+| `IMAP_HOST`, `IMAP_USER`, `IMAP_PASSWORD` | For `backend/channels/email_poll.py` |
+| `LIFELINE_DB`, `LIFELINE_TODAY` | Database path; fixed demo date (`real` uses today) |
+
+## Live demo messages
+
+Reset the demo first (sidebar button). Examples (partners are *All India Cargo* and *DHL* in the sample data):
+
+| Message | Expected |
+|---|---|
+| `AIC-HYP-20261051 will be 8 days late, vehicle breakdown` | Critical alert, backup partner recommended |
+| `AIC-HYP-20261052 delayed, will update soon` | Needs review (no length given) |
+| `DHL-HYP-20261053 will be 4 days late` (sent as All India Cargo) | Refused: order belongs to another partner |
+| `AIC-HYP-20261052 will be 1 day late` | Info only, stock covers it |
+
+## API
+
+15 REST endpoints under `/api` (`health`, `summary`, `orders`, `suppliers`, `inventory`, `messages`, `alerts`, `alerts/{id}`, `ingest`, `alerts/{id}/decision`, `alerts/{id}/plan`, `ask`, `jobs/{id}`, `audit`, `reset`) and two webhooks (`/webhooks/twilio`, `/webhooks/email`). Interactive docs at `/docs`.
+
+## Project structure
+
+```
+backend/   main.py (API) agent.py (pipeline) llm.py (all AI calls) risk.py scenarios.py db.py jobs.py config.py
+           channels/ (email_poll.py, twilio_sig.py)  prompts/plan_system.md
+frontend/  index.html app.js styles.css
+data/      suppliers.csv parts.csv orders.csv inventory.csv playbook.csv
+tools/     convert_complaints.py  start_tunnel.ps1
+```
+
+## Data
+
+The orders, carriers, delay reasons, statuses and the playbook come from a hypothetical delivery-delay complaints dataset (50 consignments, 2 carriers, 10 delay reasons). Items, quantities, dates, stock levels, costs, contact details and the two alternate carriers are **generated sample data**. Scenario parameters in `backend/config.py` are placeholder assumptions to be replaced with real contract values. `tools/convert_complaints.py` rebuilds the CSV files from the workbook.
+
+## Limitations and roadmap
+
+- Prototype on SQLite with a single instance and no user accounts; add authentication, a production database and a job queue before real use.
+- Messages are not sent back to partners yet; plans are drafts to copy.
+- No formal test suite or accuracy benchmark yet. The 50 labelled complaints are a natural test set.
+- SAP integration is **designed, not live**: the data model maps to ERP purchase-order and stock data, and an SAP Generative AI Hub provider exists in code but is unverified. Planned: HANA Cloud storage, live ERP feeds, approved WhatsApp Business templates, guarded auto-execution for pre-approved actions.
+
+## Security notes
+
+Keep service keys, `.env` files and the database out of Git (see `.gitignore`). Replace the sample phone numbers and emails in `data/suppliers.csv` before sharing a repository publicly.
