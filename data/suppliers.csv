@@ -1,5 +1,5 @@
 supplier_id, name                  , region             , phone        , email                        , payment_terms_days, base_reliability
-S01        , All India Cargo       , India (domestic)   , +917795440047, ops@allindiacargo.example    ,                 30,               85
+S01        , All India Cargo       , India (domestic)   , +910000000001, ops@allindiacargo.example    ,                 30,               85
 S02        , DHL                   , International      , +910000000002, support@dhl-partner.example  ,                 30,               85
 S03        , Rapid Route Logistics , India (domestic)   , +910000000003, dispatch@rapidroute.example  ,                 30,               88
 S04        , Metro Freight Services, India (metro lanes), +910000000004, bookings@metrofreight.example,                 45,               84
